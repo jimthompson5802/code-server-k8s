@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-demo
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: apple-app
+  namespace: nginx-demo
+  labels:
+    app: apple
+spec:
+  containers:
+    - name: apple-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=apple"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: apple-service
+  namespace: nginx-demo
+spec:
+  selector:
+    app: apple
+  ports:
+    - port: 5678 # Default port for image
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: banana-app
+  namespace: nginx-demo
+  labels:
+    app: banana
+spec:
+  containers:
+    - name: banana-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=banana"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: banana-service
+  namespace: nginx-demo
+spec:
+  selector:
+    app: banana
+  ports:
+    - port: 5678 # Default port for image
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: nginx-demo
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /apple
+          backend:
+            serviceName: apple-service
+            servicePort: 5678
+        - path: /banana
+          backend:
+            serviceName: banana-service
+            servicePort: 5678
