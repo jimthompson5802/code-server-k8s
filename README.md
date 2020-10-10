@@ -7,7 +7,7 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 ### Contents
 |File|Description|
 |----|-----------|
-|code_server.yaml|k8s manifest file to defin code-server resources: namespace, ingress, services, deployments|
+|code_server_nginx.yaml|k8s manifest file to define code-server resources: namespace, ingress, services, deployments.  Based on nginx ingress controller.|
 |ingress_nginx.yaml|k8s manifest to define nginx ingress controller|
 |ingress_nginx_demo.yaml|k8s manifest to run a demo utilization the nginx ingress controller|
 
