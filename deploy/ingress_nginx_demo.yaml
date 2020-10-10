@@ -70,9 +70,12 @@ metadata:
   namespace: nginx-demo
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+
 spec:
   rules:
-  - http:
+  - host: kubernetes.docker.internal
+    http:
       paths:
         - path: /apple
           backend:
