@@ -11,6 +11,9 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 |ingress_nginx.yaml|k8s manifest to define nginx ingress controller|
 |ingress_nginx_demo.yaml|k8s manifest to run a demo utilization the nginx ingress controller|
 
+### Setup
+* nginx ingress controller install: https://kubernetes.github.io/ingress-nginx/deploy/#docker-for-mac
+
 ### Lessons Learned
 Specifying a non-trivial path for the coder-server ingress causes a `HTTP 401` error.
 
