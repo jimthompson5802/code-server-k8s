@@ -15,7 +15,7 @@ spec:
   - host: kubernetes.docker.internal
     http:
       paths:
-      - path: /code-server
+      - path: /
         backend:
           serviceName: code-server-service
           servicePort: 80
