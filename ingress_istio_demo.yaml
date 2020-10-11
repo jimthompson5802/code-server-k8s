@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-demo
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: apple-app
+  namespace: istio-demo
+  labels:
+    app: apple
+spec:
+  containers:
+    - name: apple-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=apple"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: apple-service
+  namespace: istio-demo
+spec:
+  selector:
+    app: apple
+  ports:
+    - port: 5678 # Default port for image
+
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: banana-app
+  namespace: istio-demo
+  labels:
+    app: banana
+spec:
+  containers:
+    - name: banana-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=banana"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: banana-service
+  namespace: istio-demo
+spec:
+  selector:
+    app: banana
+  ports:
+    - port: 5678 # Default port for image
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: istio-demo
+  annotations:
+#    ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: istio
+
+spec:
+  rules:
+  - host: kubernetes.docker.internal
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: apple-service
+            servicePort: 5678
+#        - path: /banana
+#          backend:
+#            serviceName: banana-service
+#            servicePort: 5678
+
+#---
+#apiVersion: networking.istio.io/v1alpha3
+#kind: Gateway
+#metadata:
+#  name: example-gateway
+#  namespace: istio-demo
+#spec:
+#  selector:
+#    istio: ingressgateway # use istio default controller
+#  servers:
+#  - port:
+#      number: 80
+#      name: http
+#      protocol: HTTP
+#    hosts:
+#    - "*"
+#
+#---
+#
+#apiVersion: networking.istio.io/v1alpha3
+#kind: VirtualService
+#metadata:
+#  name: example-apple-vs
+#  namespace: istio-demo
+#spec:
+#  gateways:
+#  - example-gateway
+#  hosts:
+#  - '*'
+#  http:
+#  - match:
+#    - uri:
+#        prefix: /
+#    rewrite:
+#      uri: /
+#    route:
+#    - destination:
+#        host: apple-service
+#        port:
+#          number: 5678
+#    timeout: 300s
+#
