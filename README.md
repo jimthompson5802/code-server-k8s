@@ -17,7 +17,7 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 ### Lessons Learned
 
 #### HTTP 401 error
-Specifying a non-trivial path for the coder-server ingress causes a `HTTP 401` error.
+Specifying a non-trivial path for the coder-server ingress causes a `HTTP 401` error.  This [blog posting](https://airbrake.io/blog/http-errors/401-unauthorized-error) provided the insight to the solution, see the discussion on "Check Requested URL".
 
 **Partial Ingress specification with the error**
 ``` 
