@@ -6,6 +6,10 @@ istioctl install --set profile=demo
 # specify istio to automatically inject sidecar proxies
 kubectl label namespace default istio-injection=enabled
 
+# these are for user defined demos
+kubectl label namespace code-server istio-injection=enabled
+kubectl label namespace istio-demo istio-injection=enabled
+
 # deploy BookInfo sample application
 # set working directory to istio install location
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
