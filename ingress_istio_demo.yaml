@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: istio-demo
+  labels:
+    istio-injection: enabled
 
 ---
 
@@ -31,6 +33,7 @@ spec:
     app: apple
   ports:
     - port: 5678 # Default port for image
+      name: http
 
 ---
 
@@ -60,6 +63,7 @@ spec:
     app: banana
   ports:
     - port: 5678 # Default port for image
+      name: http
 
 ---
 apiVersion: networking.istio.io/v1alpha3
