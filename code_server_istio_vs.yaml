@@ -1,3 +1,6 @@
+# this uses istio VirtualService and Gateway.
+# Work-in-progress
+
 apiVersion: v1
 kind: Namespace
 metadata:
