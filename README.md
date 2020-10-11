@@ -15,6 +15,8 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 * nginx ingress controller install: https://kubernetes.github.io/ingress-nginx/deploy/#docker-for-mac
 
 ### Lessons Learned
+
+#### HTTP 401 error
 Specifying a non-trivial path for the coder-server ingress causes a `HTTP 401` error.
 
 **Partial Ingress specification with the error**
@@ -192,3 +194,20 @@ im-MacBook-Pro:jim deploy[714]$ curl -kL http://kubernetes.docker.internal/
 
 **Test with browser**
 ![](images/http_401_fixed.png)
+
+#### URL Target Re-write
+
+With nginx ingress controller proved ability to do uri target re-write.  Re-writing accomplished with the annotation `nginx.ingress.kubernetes.io/rewrite-target: /$1` and use of regular expressions in the `path` specification, e.g.,
+```
+      - path: /code-server/(.*|$)
+
+      - path: /code-server/(echo)
+```
+
+|Original URL|Re-written URL|
+|------------|--------------|
+|`http://hostname.com/code-server/`|`http://hostname.com/`|
+|`http://hostname.com/code-server/echo`|`http://hostname.com/echo`|
+
+
+```
