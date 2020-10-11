@@ -40,9 +40,9 @@ spec:
   - name: code-server-http
     match:
     - uri:
-        exact: /
-#    rewrite:
-#      uri: /
+        exact: /code-server
+    rewrite:
+      uri: /
     route:
     - destination:
         host: code-server-service
