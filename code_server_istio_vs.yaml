@@ -33,46 +33,22 @@ metadata:
   namespace: code-server
 spec:
   gateways:
-  - code-server-gateway
+    - code-server-gateway
   hosts:
-  - '*'
+    - '*'
   http:
-  - match:
+  - name: code-server-http
+    match:
     - uri:
-        exact: /code-server
-    rewrite:
-      uri: /
+        exact: /
+#    rewrite:
+#      uri: /
     route:
     - destination:
         host: code-server-service
         port:
           number: 80
     timeout: 300s
-
----
-
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: code-server-login-vs
-  namespace: code-server
-spec:
-  gateways:
-  - code-server-gateway
-  hosts:
-  - '*'
-  http:
-  - match:
-    - uri:
-        prefix: /login
-    route:
-    - destination:
-        host: code-server-service
-        port:
-          number: 80
-
-    timeout: 300s
-
 
 ---
 
