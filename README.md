@@ -13,6 +13,7 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 
 ### Setup
 * nginx ingress controller install: https://kubernetes.github.io/ingress-nginx/deploy/#docker-for-mac
+* istio ingress controller install: bash script [`istio_setup.sh`](./istio_setup.sh)
 
 ### Lessons Learned
 
