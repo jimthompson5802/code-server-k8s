@@ -10,6 +10,7 @@ This work is built on [this example](https://www.digitalocean.com/community/tuto
 |code_server_nginx.yaml|k8s manifest file to define code-server resources: namespace, ingress, services, deployments.  Based on nginx ingress controller.|
 |ingress_nginx.yaml|k8s manifest to define nginx ingress controller|
 |ingress_nginx_demo.yaml|k8s manifest to run a demo utilization the nginx ingress controller|
+|istio_setup.sh|Collection of commands to install istio ingress controller and bookinfo sample app|
 
 ### Setup
 * nginx ingress controller install: https://kubernetes.github.io/ingress-nginx/deploy/#docker-for-mac
