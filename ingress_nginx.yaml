@@ -1,3 +1,4 @@
+# setup Nginx ingress controller and related resources
 # source: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml
 apiVersion: v1
 kind: Namespace
