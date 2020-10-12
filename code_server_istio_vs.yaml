@@ -1,0 +1,151 @@
+# this uses istio VirtualService and Gateway.
+# Work-in-progress
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: code-server
+  labels:
+    istio-injection: enabled
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: code-server-gateway
+  namespace: code-server
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: code-server-vs
+  namespace: code-server
+spec:
+  gateways:
+    - code-server-gateway
+  hosts:
+    - '*'
+  http:
+  - name: code-server-http
+    match:
+    - uri:   # for initial GET to code-server
+        exact: /
+    - uri:  # this needed to handle internal back and forth w/ browser
+        regex: /*
+    route:
+    - destination:
+        host: code-server-service
+        port:
+          number: 80
+    timeout: 300s
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: echo-vs
+  namespace: code-server
+spec:
+  gateways:
+  - code-server-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /code-server/echo
+    rewrite:
+      uri: /echo
+    route:
+    - destination:
+        host: echo-service
+        port:
+          number: 5678
+    timeout: 300s
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: code-server-service
+ namespace: code-server
+spec:
+ ports:
+ - port: 80
+   name: http
+   targetPort: 8080
+ selector:
+   app: code-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: code-server
+  name: code-server
+  namespace: code-server
+spec:
+  selector:
+    matchLabels:
+      app: code-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      containers:
+      - image: codercom/code-server:latest
+        imagePullPolicy: Always
+        name: code-server
+        args: ["--bind-addr", "0.0.0.0:8080", "--auth", "none"]
+        env:
+        - name: PASSWORD
+          value: "your_password"
+        ports:
+          - containerPort: 8080
+
+---
+#
+# Demonstration echo service
+#
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: echo-app
+  namespace: code-server
+  labels:
+    app: echo
+spec:
+  containers:
+    - name: echo-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=code-server"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: echo-service
+  namespace: code-server
+spec:
+  selector:
+    app: echo
+  ports:
+    - port: 5678 # Default port for image
+      name: http
