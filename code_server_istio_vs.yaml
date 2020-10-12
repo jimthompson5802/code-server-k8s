@@ -67,7 +67,7 @@ spec:
     match:   # TODO confirm splitting into two virtualservices is robust solution
     - uri:  # this needed to support browser javascript back and forth w/ server
             # in particular icons are not loaded into browser if not present
-        regex: /(static|vscode).*
+        regex: /(static|code-server/vscode).*
     route:
     - destination:
         host: code-server-service
