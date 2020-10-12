@@ -38,10 +38,11 @@ spec:
     - '*'
   http:
   - name: code-server-http
-    match:
+    match:   # TODO need to work on uri rewrite to support non-trival commannd
     - uri:   # for initial GET to code-server
         exact: /
-    - uri:  # this needed to handle internal back and forth w/ browser
+    - uri:  # this needed to support browser javascript back and forth w/ server
+            # in particular icons are not loaded into browser if not present
         regex: /.*
     route:
     - destination:
@@ -51,7 +52,8 @@ spec:
     timeout: 300s
 
 ---
-
+# todo:  not working with above code-server uri spec, need to figure out how
+#        to get working again
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -65,9 +67,9 @@ spec:
   http:
   - match:
     - uri:
-        exact: /code-server/echo
+        exact: /echo
     rewrite:
-      uri: /echo
+      uri: /
     route:
     - destination:
         host: echo-service
