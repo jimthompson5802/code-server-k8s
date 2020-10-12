@@ -39,10 +39,10 @@ spec:
   http:
   - name: code-server-http
     match:
-    - uri:
-        exact: /code-server
-    rewrite:
-      uri: /
+    - uri:   # for initial GET to code-server
+        exact: /
+    - uri:  # this needed to handle internal back and forth w/ browser
+        regex: /*
     route:
     - destination:
         host: code-server-service
@@ -110,6 +110,7 @@ spec:
       - image: codercom/code-server:latest
         imagePullPolicy: Always
         name: code-server
+        args: ["--bind-addr", "0.0.0.0:8080", "--auth", "none"]
         env:
         - name: PASSWORD
           value: "your_password"
