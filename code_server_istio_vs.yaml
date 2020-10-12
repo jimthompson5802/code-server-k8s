@@ -42,7 +42,7 @@ spec:
     - uri:   # for initial GET to code-server
         exact: /
     - uri:  # this needed to handle internal back and forth w/ browser
-        regex: /*
+        regex: /.*
     route:
     - destination:
         host: code-server-service
