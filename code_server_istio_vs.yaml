@@ -25,11 +25,11 @@ spec:
     hosts:
     - "*"
 ---
-
+# TODO confirm splitting two virualservices work for multiple users
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: code-server-vs
+  name: code-server-vs1
   namespace: code-server
 spec:
   gateways:
@@ -38,12 +38,36 @@ spec:
     - '*'
   http:
   - name: code-server-http
-    match:   # TODO need to work on uri rewrite to support non-trival commannd
+    match:   # TODO confirm splitting into two virtualservices is robust solution
     - uri:   # for initial GET to code-server
-        exact: /
+        exact: /code-server
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: code-server-service
+        port:
+          number: 80
+    timeout: 300s
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: code-server-vs2
+  namespace: code-server
+spec:
+  gateways:
+    - code-server-gateway
+  hosts:
+    - '*'
+  http:
+  - name: code-server-http
+    match:   # TODO confirm splitting into two virtualservices is robust solution
     - uri:  # this needed to support browser javascript back and forth w/ server
             # in particular icons are not loaded into browser if not present
-        regex: /.*
+        regex: /(static|vscode).*
     route:
     - destination:
         host: code-server-service
