@@ -1,0 +1,85 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: code-server-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: code-server
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - code-server-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /coder/code-server/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: code-server
+        port:
+          number: 8080
+    timeout: 300s
+  # Can't get it to work without the trailing /
+  # - match:
+  #   - uri:
+  #       exact: /coder/code-server
+  #   rewrite:
+  #     uri: /
+  #   route:
+  #   - destination:
+  #       host: code-server
+  #       port:
+  #         number: 8080
+  #   timeout: 300s
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: code-server
+spec:
+ ports:
+ - port: 8080
+   name: http
+   targetPort: 8080
+ selector:
+   app: code-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server
+  labels:
+    app: code-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: code-server
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      containers:
+      - name: code-server
+        image: codercom/code-server:latest
+        imagePullPolicy: IfNotPresent
+        args: ["--bind-addr", "0.0.0.0:8080", "--auth", "none"]
+        ports:
+          - containerPort: 8080
+---
