@@ -72,6 +72,14 @@ spec:
         port:
           number: 80
     timeout: 300s
+#  - route:   #DEFAULT Route - does not make sense otherwise otherwise empty path is allowed
+#    - destination:
+#        host: code-server-service
+#        port:
+#          number: 80
+#    timeout: 300s
+
+
 
 
 ---
