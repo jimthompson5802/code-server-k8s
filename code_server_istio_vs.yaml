@@ -60,7 +60,7 @@ spec:
         port:
           number: 80
     timeout: 300s
-  - name: code-server-root
+  - name: code-server-match-root
     match:
     - uri:  # provide support for the root path
         exact: /code-server
