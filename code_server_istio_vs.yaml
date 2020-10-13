@@ -39,9 +39,8 @@ spec:
     - '*'
   http:
   - name: code-server-match-static
-    match:   # TODO confirm splitting into two virtualservices is robust solution
-    - uri:  # this needed to support browser javascript back and forth w/ server
-            # in particular icons are not loaded into browser if not present
+    match:
+    - uri:  # Support for internal REST API
         prefix: /static
     route:
     - destination:
@@ -50,9 +49,8 @@ spec:
           number: 80
     timeout: 300s
   - name: code-server-match-code-server-vscode
-    match:   # TODO confirm splitting into two virtualservices is robust solution
-    - uri:  # this needed to support browser javascript back and forth w/ server
-            # in particular icons are not loaded into browser if not present
+    match:
+    - uri:  # support for internal REST API
         prefix: /code-server/vscode
     rewrite:
       uri: /vscode
@@ -63,9 +61,8 @@ spec:
           number: 80
     timeout: 300s
   - name: code-server-root
-    match:   # TODO confirm splitting into two virtualservices is robust solution
-    - uri:  # this needed to support browser javascript back and forth w/ server
-            # in particular icons are not loaded into browser if not present
+    match:
+    - uri:  # provide support for the root path
         exact: /code-server
     rewrite:
       uri: /
@@ -78,8 +75,7 @@ spec:
 
 
 ---
-# todo:  not working with above code-server uri spec, need to figure out how
-#        to get working again
+
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
