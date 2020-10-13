@@ -24,12 +24,13 @@ spec:
       protocol: HTTP
     hosts:
     - "*"
+
 ---
-# TODO confirm splitting two virualservices work for multiple users
+
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: code-server-vs1
+  name: code-server-vs
   namespace: code-server
 spec:
   gateways:
@@ -37,9 +38,34 @@ spec:
   hosts:
     - '*'
   http:
-  - name: code-server-http
+  - name: code-server-match-static
     match:   # TODO confirm splitting into two virtualservices is robust solution
-    - uri:   # for initial GET to code-server
+    - uri:  # this needed to support browser javascript back and forth w/ server
+            # in particular icons are not loaded into browser if not present
+        prefix: /static
+    route:
+    - destination:
+        host: code-server-service
+        port:
+          number: 80
+    timeout: 300s
+  - name: code-server-match-code-server-vscode
+    match:   # TODO confirm splitting into two virtualservices is robust solution
+    - uri:  # this needed to support browser javascript back and forth w/ server
+            # in particular icons are not loaded into browser if not present
+        prefix: /code-server/vscode
+    rewrite:
+      uri: /vscode
+    route:
+    - destination:
+        host: code-server-service
+        port:
+          number: 80
+    timeout: 300s
+  - name: code-server-root
+    match:   # TODO confirm splitting into two virtualservices is robust solution
+    - uri:  # this needed to support browser javascript back and forth w/ server
+            # in particular icons are not loaded into browser if not present
         exact: /code-server
     rewrite:
       uri: /
@@ -50,30 +76,6 @@ spec:
           number: 80
     timeout: 300s
 
----
-
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: code-server-vs2
-  namespace: code-server
-spec:
-  gateways:
-    - code-server-gateway
-  hosts:
-    - '*'
-  http:
-  - name: code-server-http
-    match:   # TODO confirm splitting into two virtualservices is robust solution
-    - uri:  # this needed to support browser javascript back and forth w/ server
-            # in particular icons are not loaded into browser if not present
-        regex: /(static|code-server/vscode).*
-    route:
-    - destination:
-        host: code-server-service
-        port:
-          number: 80
-    timeout: 300s
 
 ---
 # todo:  not working with above code-server uri spec, need to figure out how
