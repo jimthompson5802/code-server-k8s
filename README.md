@@ -212,6 +212,4 @@ With nginx ingress controller proved ability to do uri target re-write.  Re-writ
 |------------|--------------|
 |`http://hostname.com/code-server/`|`http://hostname.com/`|
 |`http://hostname.com/code-server/echo`|`http://hostname.com/echo`|
-
-
 ```
